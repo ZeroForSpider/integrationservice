@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.serviceprovider.dao.KafkaConfigurationDao">
+    <insert id="insertConfiguration" parameterType="com.iot.iservice.entity.po.KafkaConfigurationPO" useGeneratedKeys="true" keyProperty="id" >
+        insert into kafka_configuration_table
+        (configuration,owner)
+        values(#{configuration},#{owner})
+    </insert>
+
+    <select id="selectConfigurationByOwner" parameterType="java.lang.String"  resultType="com.iot.iservice.entity.po.KafkaConfigurationPO">
+        select id,owner,configuration from kafka_configuration_table where owner=#{owner}
+    </select>
+
+
+</mapper>

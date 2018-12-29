@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="demo-consumer" owner="lht" organization="iot"/>
+    <!--向 zookeeper 订阅 provider 的地址，由 zookeeper 定时推送-->
+    <dubbo:registry address="zookeeper://119.29.193.187:2181" protocol="zookeeper"/>
+    <!--使用 dubbo 协议调用定义好的 api 接口-->
+    <dubbo:reference id="kafkaConfiguration" interface="com.iot.iservice.service.IKafkaConfiguration"/>
+
+    <!--调用消费者服务-->
+    <dubbo:reference id="customerDeviceStatus"  interface="com.iot.iservice.service.ICustomerDeviceStatus"/>
+</beans>

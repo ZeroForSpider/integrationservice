@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.serviceprovider.dao.CustomerDeviceStatusDao">
+    <insert id="insertBatchDeviceStatus" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id" >
+     insert into customer_device_status
+      (device_mac_address,generator_time_stamp,device_status)
+     values 
+     <foreach collection="list" item="item" separator="," >
+         (#{item.deviceMacAddress},#{item.generatorTimeStamp},#{item.deviceStatus})
+     </foreach>
+    </insert>
+
+    <update id="updateBatchDeviceStatus" parameterType="com.iot.iservice.entity.vo.UpDateDeviceStatusVo">
+        update customer_device_status set
+        device_status=#{deviceStatus} where device_mac_address in
+        <foreach collection="customerDeviceStatusPOList" open="(" close=")" separator="," item="item">
+            #{item.deviceMacAddress}
+        </foreach>
+
+    </update>
+
+    <select id="selectDeviceInfoByMacAddress" parameterType="com.iot.iservice.entity.vo.SelectDeviceStatusVo">
+        select device_mac_address,device_status from customer_device_status
+        where  device_mac_address in
+        <foreach collection="macAddressList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>
