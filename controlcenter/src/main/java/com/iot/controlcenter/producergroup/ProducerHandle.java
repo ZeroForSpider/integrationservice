@@ -30,7 +30,6 @@ public class ProducerHandle implements Runnable {
     public Logger logger = Logger.getLogger(ProducerHandle.class);
 
 
-
     private CommonConfig commonConfig;
 
     public static String randMacAddress() {
