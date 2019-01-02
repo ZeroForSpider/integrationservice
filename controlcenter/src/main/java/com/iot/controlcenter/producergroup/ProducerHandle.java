@@ -39,9 +39,9 @@ public class ProducerHandle implements Runnable {
                 String.format("%02x", 0x52),
                 String.format("%02x", 0x54),
                 String.format("%02x", 0x00),
-                String.format("%02x", random.nextInt(0x01)),
                 String.format("%02x", random.nextInt(0x0F)),
-                String.format("%02x", random.nextInt(0xF0))
+                String.format("%02x", random.nextInt(0x0F)),
+                String.format("%02x", random.nextInt(0x04))
         };
         return String.join(SEPARATOR_OF_MAC, mac);
     }
