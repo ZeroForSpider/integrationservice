@@ -14,6 +14,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.rmi.runtime.Log;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -47,38 +48,27 @@ public class CustomerGroup {
          */
         private CommonConfig commonConfig;
 
-        public Properties getProperties() {
-            Properties properties = new Properties();
-            properties.put("bootstrap.servers", "119.29.193.187:9092");
-            properties.put("group.id", "group-1");
-            properties.put("enable.auto.commit", "true");
-            properties.put("auto.commit.interval.ms", "1000");
-            properties.put("auto.offset.reset", "earliest");
-            properties.put("session.timeout.ms", "30000");
-            properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-            properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-            return properties;
-        }
-
         @Override
         public void run() {
             try {
                 logger.info("RUN");
-                logger.info("confdig  "+commonConfig.properties);
+                logger.info("confdig  " + commonConfig.properties);
                 KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(commonConfig.properties);
-                logger.info("Keyy: "+commonConfig.TopicKey);
+                logger.info("Keyy: " + commonConfig.TopicKey);
                 kafkaConsumer.subscribe(Arrays.asList(commonConfig.TopicKey));
                 while (true) {
-                    logger.info("message");
+                    logger.info("轮询消息");
                     ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
                     for (ConsumerRecord<String, String> record : records) {
-                        logger.info("接受消息");
-                        logger.info(record.value());
+//                        logger.info("接受消息");
+//                        logger.info(record.value());
                         messageQueue.add(record.value());
+                        logger.info("添加数据后的消息队列长度" + messageQueue.size());
                     }
+                   Thread.sleep(1000);
                 }
-            }catch (Exception e){
-                logger.info("Exception "+e);
+            } catch (Exception e) {
+                logger.info("Exception " + e);
             }
         }
 
@@ -214,51 +204,50 @@ public class CustomerGroup {
 
         @Override
         public void run() {
-            while (true) {
-                if (messageQueue.size() > 10) {
-                    List<Message> list = new ArrayList<>();
-                    logger.info("保存数据开始");
-                    for (int i = 0; i < 10; i++) {
-                        JSONObject jsonObject = JSON.parseObject(messageQueue.poll());
-                        Message message = jsonObject.toJavaObject(Message.class);
-                        list.add(message);
+            try {
+                while (true) {
+                    logger.info("messageQueue：" + messageQueue.size());
+                    if (messageQueue.size() > 10) {
+                        List<Message> list = new ArrayList<>();
+                        logger.info("保存数据开始");
+                        for (int i = 0; i < 10; i++) {
+                            JSONObject jsonObject = JSON.parseObject(messageQueue.poll());
+                            Message message = jsonObject.toJavaObject(Message.class);
+                            list.add(message);
+                        }
+                        saveMessage(list);
+                    } else {
+                        Thread.sleep(1000);
                     }
-                    saveMessage(list);
-                } else {
-//                  synchronized (messageQueue){
-//                      try {
-//                          messageQueue.wait(0);
-//                      } catch (InterruptedException e) {
-//                          e.printStackTrace();
-//                      }
-//                  }
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    continue;
                 }
+            } catch (Exception e) {
+                logger.info("消息队列保存数据异常" + e);
             }
         }
     }
 
     /**
      * 创建消费者线程池
+     *
      * @param threadNumber 线程个数
      * @param commonConfig 消费者配置信息
      * @param isShutdown   是否结束线程池
      */
-    public void CreateThread(int threadNumber,CommonConfig commonConfig,boolean isShutdown){
+    public void CreateThread(int threadNumber, CommonConfig commonConfig, boolean isShutdown) {
         logger.info("创建消费者线程池");
-        ExecutorService executorService= Executors.newFixedThreadPool(threadNumber+1);
-        if(isShutdown){
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        if (isShutdown) {
             executorService.shutdownNow();
-        }else {
-            for (int i = 0; i < threadNumber; i++) {
+        } else {
+            try {
+
+                executorService.submit(new MessageHandle());
+            } catch (Exception e) {
+                logger.info(e);
+            }
+            for (int i = 0; i < threadNumber-2; i++) {
                 executorService.submit(new CustomerHandle(commonConfig));
             }
-            executorService.submit(new MessageHandle());
         }
     }
 

@@ -112,7 +112,7 @@ public class TimeTask implements Runnable {
         CommonConfig producerProperties = getProducerProperties();
         CommonConfig customerProperties = getCustomerProperties();
        // logger.info("生产者配置信息如下：" + producerProperties);
-        logger.info("消费者配置信息如下：" + customerProperties.toString());
+    //    logger.info("消费者配置信息如下：" + customerProperties.toString());
 //        Integer maxThreadNumber = Integer.valueOf(producerProperties.MaxThreadCountKeyOfProducer) + Integer.valueOf(customerProperties.MaxThreadCountKeyOfCustomer) + 1;
 //        ExecutorService executorService = Executors.newFixedThreadPool(Integer.valueOf(maxThreadNumber));
 //        logger.info("将生产者放入线程池");

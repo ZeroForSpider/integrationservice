@@ -44,7 +44,7 @@ public class ControlcenterApplication {
     @Bean
     public RestTemplate restTemplate() throws InterruptedException {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(new TimeTask(iKafkaConfiguration,customerGroup),1000, 3000000, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(new TimeTask(iKafkaConfiguration,customerGroup),10000, 3000000, TimeUnit.MILLISECONDS);
         return builder.build();
     }
 
