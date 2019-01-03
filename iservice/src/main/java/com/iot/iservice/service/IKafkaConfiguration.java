@@ -45,12 +45,12 @@ public interface IKafkaConfiguration {
      * 获取生产者配置信息接口
      * @return
      */
-    Map<String,String> getProducerConfiguration();
+    String getProducerConfiguration();
 
     /**
      * 获取消费者配置信息接口
      * @return
      */
-    Map<String,String> getCustomerConfiguration();
+    String getCustomerConfiguration();
 
 }

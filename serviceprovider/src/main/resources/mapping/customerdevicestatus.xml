@@ -20,7 +20,7 @@
 
     </update>
 
-    <select id="selectDeviceInfoByMacAddress" parameterType="com.iot.iservice.entity.vo.SelectDeviceStatusVo">
+    <select id="selectDeviceInfoByMacAddress" resultType="com.iot.iservice.entity.po.CustomerDeviceStatusPO" parameterType="com.iot.iservice.entity.vo.SelectDeviceStatusVo">
         select device_mac_address,device_status from customer_device_status
         where  device_mac_address in
         <foreach collection="macAddressList" open="(" close=")" separator="," item="item">

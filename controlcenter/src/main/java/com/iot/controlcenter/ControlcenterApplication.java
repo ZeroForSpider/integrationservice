@@ -1,13 +1,9 @@
 package com.iot.controlcenter;
 
-import com.iot.controlcenter.customerGroup.CustomerGroup;
+import com.iot.controlcenter.config.CheckKafkaConfigurationIsUpdate;
 import com.iot.controlcenter.producergroup.ProducerHandle;
-import com.iot.iservice.entity.po.CustomerDeviceStatusPO;
-import com.iot.iservice.entity.vo.UpDateDeviceStatusVo;
 import com.iot.iservice.service.ICustomerDeviceStatus;
 import com.iot.iservice.service.IKafkaConfiguration;
-import org.apache.catalina.webresources.ClasspathURLStreamHandler;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,23 +27,24 @@ public class ControlcenterApplication {
     private RestTemplateBuilder builder;
 
 
+    /**
+     * kafka配置信息接口
+     */
     @Autowired
     private IKafkaConfiguration iKafkaConfiguration;
 
-    @Autowired
-    private CustomerGroup customerGroup;
 
-
+    /**
+     * 设备信息配置接口
+     */
     @Autowired
-    private ProducerHandle producerHandle;
+    private ICustomerDeviceStatus iCustomerDeviceStatus;
 
     @Bean
     public RestTemplate restTemplate() throws InterruptedException {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(new TimeTask(iKafkaConfiguration,customerGroup),10000, 3000000, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(new CheckKafkaConfigurationIsUpdate(iKafkaConfiguration, iCustomerDeviceStatus), 10000, 10000, TimeUnit.MILLISECONDS);
         return builder.build();
     }
-
-
 }
 

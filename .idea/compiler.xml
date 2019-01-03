@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="controlcenter" />
-        <module name="integrationservice" />
         <module name="iservice" />
         <module name="serviceprovider" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="integrationservice" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>

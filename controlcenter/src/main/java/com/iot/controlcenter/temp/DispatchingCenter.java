@@ -1,4 +1,4 @@
-package com.iot.controlcenter;
+package com.iot.controlcenter.temp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

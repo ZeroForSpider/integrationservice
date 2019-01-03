@@ -1,6 +1,7 @@
 package com.iot.controlcenter.producergroup;
 
 import com.alibaba.fastjson.JSON;
+import com.iot.controlcenter.ThreadManage.ThreadPoolUtils;
 import com.iot.controlcenter.config.CommonConfig;
 import com.iot.controlcenter.model.Message;
 import com.iot.iservice.service.IKafkaConfiguration;
@@ -19,10 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ProducerHandle implements Runnable {
 
-    @Autowired
-    private IKafkaConfiguration iKafkaConfiguration;
-
-
+    /**
+     * 生产者实例
+     */
     private static KafkaProducer<String, String> kafkaProducer = null;
     /**
      * 日志
@@ -30,8 +30,16 @@ public class ProducerHandle implements Runnable {
     public Logger logger = Logger.getLogger(ProducerHandle.class);
 
 
+    /**
+     * 生产者配置信息
+     */
     private CommonConfig commonConfig;
 
+    /**
+     * 产生设备信息
+     *
+     * @return
+     */
     public static String randMacAddress() {
         String SEPARATOR_OF_MAC = ":";
         Random random = new Random();
@@ -39,9 +47,9 @@ public class ProducerHandle implements Runnable {
                 String.format("%02x", 0x52),
                 String.format("%02x", 0x54),
                 String.format("%02x", 0x00),
-                String.format("%02x", random.nextInt(0x0F)),
-                String.format("%02x", random.nextInt(0x0F)),
-                String.format("%02x", random.nextInt(0x04))
+                String.format("%02x", random.nextInt(0xFF)),
+                String.format("%02x", random.nextInt(0xFF)),
+                String.format("%02x", random.nextInt(0xFF))
         };
         return String.join(SEPARATOR_OF_MAC, mac);
     }
@@ -50,20 +58,10 @@ public class ProducerHandle implements Runnable {
     public ProducerHandle() {
     }
 
-    public ProducerHandle(IKafkaConfiguration iKafkaConfiguration, CommonConfig commonConfig) {
-        this.iKafkaConfiguration = iKafkaConfiguration;
+    public ProducerHandle(CommonConfig commonConfig) {
         this.commonConfig = commonConfig;
     }
 
-    public Properties getProducerProperties() {
-        Map<String, String> map = iKafkaConfiguration.getProducerConfiguration();
-        Properties properties = new Properties();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            properties.put(entry.getKey(), entry.getValue());
-        }
-        logger.info("properties  " + properties);
-        return properties;
-    }
 
     /**
      * 得到需要推送的消息
@@ -75,15 +73,15 @@ public class ProducerHandle implements Runnable {
         String macAddress = "";
         String timeStamp = "";
         ConcurrentHashMap<String, Message> concurrentHashMap = new ConcurrentHashMap<>();
-        synchronized (ProducerHandle.class) {
-            macAddress = randMacAddress();
-            timeStamp = String.valueOf(System.currentTimeMillis());
-            Thread.sleep(100);
-        }
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
+            synchronized (ProducerHandle.class) {
+                macAddress = randMacAddress();
+                timeStamp = String.valueOf(System.currentTimeMillis());
+                Thread.sleep(10);
+            }
             concurrentHashMap.put(UUID.randomUUID().toString(), new Message(
                     macAddress,
-                    macAddress.hashCode() % 2 == 0 ? flag == 0 ? 1 : 0 : flag == 1 ? 0 : 1,
+                    macAddress.hashCode() % 2 == 0 ? (flag == 0 ? 1 : 0) : (flag == 1 ? 0 : 1),
                     timeStamp
             ));
         }
@@ -93,17 +91,19 @@ public class ProducerHandle implements Runnable {
     @Override
     public void run() {
         if (kafkaProducer == null) {
-            kafkaProducer = new KafkaProducer<>(commonConfig.properties);
+            kafkaProducer = new KafkaProducer<>(commonConfig.getProperties());
+            logger.info(commonConfig.getProperties());
         }
         try {
+            logger.info(ThreadPoolUtils.isShutdownThread);
             int flag = 0;
-            while (true) {
+            while (!ThreadPoolUtils.isShutdownThread) {
                 ConcurrentHashMap<String, Message> putMessage = getPushMessage(flag);
                 flag = flag == 0 ? 1 : 0;
                 if (putMessage.size() != 0) {
                     for (Map.Entry<String, Message> entry : putMessage.entrySet()) {
                         kafkaProducer.send(
-                                new ProducerRecord<>(commonConfig.TopicKey,
+                                new ProducerRecord<>(commonConfig.getTopic(),
                                         String.valueOf(entry.getValue().deviceMacAddress.hashCode()),
                                         JSON.toJSONString(entry.getValue()))
                         );

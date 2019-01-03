@@ -6,100 +6,97 @@ public class CommonConfig {
     /**
      * 生产者最大线程数
      */
-  public   String  MaxThreadCountKeyOfProducer="";
+  private    String  maxThreadCountOfProducer;
 
     /**
      * 主题
      */
-   public String TopicKey="";
+    private String topic;
 
     /**
      * 是否立即更新
      */
-   public   String  IsUpdateKeyOfProducer;
+    private   String  isUpdateOfProducer;
 
     /**
      *  消费者最大线程数
      */
-   public   String  MaxThreadCountKeyOfCustomer;
+    private   String  maxThreadCountOfCustomer;
 
     /**
      * 是否立即不更新
      */
-   public String IsUpdateKeyOfCustomer;
+    private String isUpdateOfCustomer;
 
 
-   public Properties properties;
+    private Properties properties;
 
-    public CommonConfig(String a) {
-        MaxThreadCountKeyOfProducer = "MaxThreadCountKeyOfProducer";
-        TopicKey = "TopicKey";
-        IsUpdateKeyOfProducer = "IsUpdateKeyOfProducer";
-        MaxThreadCountKeyOfCustomer = "MaxThreadCountKeyOfCustomer";
-        IsUpdateKeyOfCustomer = "IsUpdateKeyOfCustomer";
+    public CommonConfig() {
+        this.maxThreadCountOfProducer="3";
+        this.topic="htl";
+        this.isUpdateOfCustomer="1";
+        this.maxThreadCountOfCustomer="3";
+        this.isUpdateOfProducer="1";
         this.properties=new Properties();
     }
 
-    public CommonConfig() {
+
+    public String getMaxThreadCountOfProducer() {
+        return maxThreadCountOfProducer;
     }
 
-    public void setMaxThreadCountKeyOfProducer(String maxThreadCountKeyOfProducer) {
-        MaxThreadCountKeyOfProducer = maxThreadCountKeyOfProducer;
+    public String getTopic() {
+        return topic;
     }
 
-    public void setTopicKey(String topicKey) {
-        TopicKey = topicKey;
+    public String getIsUpdateOfProducer() {
+        return isUpdateOfProducer;
     }
 
-    public void setIsUpdateKeyOfProducer(String isUpdateKeyOfProducer) {
-        IsUpdateKeyOfProducer = isUpdateKeyOfProducer;
+    public String getMaxThreadCountOfCustomer() {
+        return maxThreadCountOfCustomer;
     }
 
-    public void setMaxThreadCountKeyOfCustomer(String maxThreadCountKeyOfCustomer) {
-        MaxThreadCountKeyOfCustomer = maxThreadCountKeyOfCustomer;
-    }
-
-    public void setIsUpdateKeyOfCustomer(String isUpdateKeyOfCustomer) {
-        IsUpdateKeyOfCustomer = isUpdateKeyOfCustomer;
-    }
-
-    public void setProperties(Properties properties) {
-        this.properties = properties;
-    }
-
-    public String getMaxThreadCountKeyOfProducer() {
-        return MaxThreadCountKeyOfProducer;
-    }
-
-    public String getTopicKey() {
-        return TopicKey;
-    }
-
-    public String getIsUpdateKeyOfProducer() {
-        return IsUpdateKeyOfProducer;
-    }
-
-    public String getMaxThreadCountKeyOfCustomer() {
-        return MaxThreadCountKeyOfCustomer;
-    }
-
-    public String getIsUpdateKeyOfCustomer() {
-        return IsUpdateKeyOfCustomer;
+    public String getIsUpdateOfCustomer() {
+        return isUpdateOfCustomer;
     }
 
     public Properties getProperties() {
         return properties;
     }
 
+    public void setMaxThreadCountOfProducer(String maxThreadCountOfProducer) {
+        this.maxThreadCountOfProducer = maxThreadCountOfProducer;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public void setIsUpdateOfProducer(String isUpdateOfProducer) {
+        this.isUpdateOfProducer = isUpdateOfProducer;
+    }
+
+    public void setMaxThreadCountOfCustomer(String maxThreadCountOfCustomer) {
+        this.maxThreadCountOfCustomer = maxThreadCountOfCustomer;
+    }
+
+    public void setIsUpdateOfCustomer(String isUpdateOfCustomer) {
+        this.isUpdateOfCustomer = isUpdateOfCustomer;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
     @Override
     public String toString() {
         return "CommonConfig{" +
-                "MaxThreadCountKeyOfProducer='" + MaxThreadCountKeyOfProducer + '\'' +
-                ", TopicKey='" + TopicKey + '\'' +
-                ", IsUpdateKeyOfProducer='" + IsUpdateKeyOfProducer + '\'' +
-                ", MaxThreadCountKeyOfCustomer='" + MaxThreadCountKeyOfCustomer + '\'' +
-                ", IsUpdateKeyOfCustomer='" + IsUpdateKeyOfCustomer + '\'' +
-                ", properties=" + properties +
+                "maxThreadCountOfProducer='" + maxThreadCountOfProducer + '\'' +
+                ", topic='" + topic + '\'' +
+                ", isUpdateOfProducer='" + isUpdateOfProducer + '\'' +
+                ", maxThreadCountOfCustomer='" + maxThreadCountOfCustomer + '\'' +
+                ", isUpdateOfCustomer='" + isUpdateOfCustomer + '\'' +
                 '}';
     }
 }

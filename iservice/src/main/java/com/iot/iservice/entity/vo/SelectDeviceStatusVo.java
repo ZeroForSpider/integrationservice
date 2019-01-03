@@ -1,8 +1,9 @@
 package com.iot.iservice.entity.vo;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class SelectDeviceStatusVo {
+public class SelectDeviceStatusVo implements Serializable {
 
     public Integer deviceStatus;
 

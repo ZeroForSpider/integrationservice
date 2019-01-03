@@ -27,7 +27,7 @@ public class IKafkaConfigurationImpl implements IKafkaConfiguration {
     /**
      * 日志
      */
-    private Logger logger=Logger.getLogger(IKafkaConfigurationImpl.class);
+    private Logger logger = Logger.getLogger(IKafkaConfigurationImpl.class);
 
     /**
      * 获取消费者配置的实现
@@ -35,15 +35,15 @@ public class IKafkaConfigurationImpl implements IKafkaConfiguration {
      * @return
      */
     @Override
-    public Map<String, String> getCustomerConfiguration() {
+    public String getCustomerConfiguration() {
         logger.info("读取消费者配置");
-        Map map=new HashMap<>();
-        KafkaConfigurationPO kafkaConfigurationPO = kafkaConfigurationDao.selectConfigurationByOwner(IKafkaConfiguration.customerOwnerKey);
-        logger.info("读取的配置信息为: "+kafkaConfigurationPO.toString());
-        if(kafkaConfigurationPO!=null){
-            map= JSON.parseObject(kafkaConfigurationPO.getConfiguration());
-        }
-        return map;
+//        Map map = new HashMap<>();
+//        KafkaConfigurationPO kafkaConfigurationPO = kafkaConfigurationDao.selectConfigurationByOwner(IKafkaConfiguration.customerOwnerKey);
+//        if (kafkaConfigurationPO != null) {
+//            logger.info("读取的配置信息为: " + kafkaConfigurationPO.toString());
+//            map = JSON.parseObject(kafkaConfigurationPO.getConfiguration());
+//        }
+        return kafkaConfigurationDao.selectConfigurationByOwner(IKafkaConfiguration.customerOwnerKey).getConfiguration();
     }
 
     /**
@@ -53,14 +53,14 @@ public class IKafkaConfigurationImpl implements IKafkaConfiguration {
      */
 
     @Override
-    public Map<String, String> getProducerConfiguration() {
+    public String getProducerConfiguration() {
         logger.info("读取生产者配置信息");
-        Map map=new HashMap();
-        KafkaConfigurationPO kafkaConfigurationPO=kafkaConfigurationDao.selectConfigurationByOwner(IKafkaConfiguration.producerOwnerKey);
-        logger.info("读取的生产者配置信息为： "+kafkaConfigurationPO.toString());
-        if(kafkaConfigurationPO!=null){
-            map= JSON.parseObject(kafkaConfigurationPO.getConfiguration());
-        }
-        return map;
+//        Map map = new HashMap();
+//        KafkaConfigurationPO kafkaConfigurationPO = kafkaConfigurationDao.selectConfigurationByOwner(IKafkaConfiguration.producerOwnerKey);
+//        logger.info("读取的生产者配置信息为： " + kafkaConfigurationPO.toString());
+//        if (kafkaConfigurationPO != null) {
+//            map = JSON.parseObject(kafkaConfigurationPO.getConfiguration());
+//        }
+        return kafkaConfigurationDao.selectConfigurationByOwner(IKafkaConfiguration.producerOwnerKey).getConfiguration();
     }
 }
